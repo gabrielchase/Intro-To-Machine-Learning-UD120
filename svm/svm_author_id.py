@@ -29,13 +29,28 @@ features_train, features_test, labels_train, labels_test = preprocess()
 
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
+import numpy as np
 
+# Use 1% of dataset to train faster
+# features_train = features_train[:len(features_train)/100] 
+# labels_train = labels_train[:len(labels_train)/100] 
 
-clf = SVC(kernel="linear")
+clf = SVC(kernel="rbf", C=10000)
+
+t0 = time()
 print('Training...')
 clf.fit(features_train, labels_train)
+print "training time:", round(time()-t0, 3), "s"
+
+t1 = time()
 print('Predicting...')
 pred = clf.predict(features_test)
+print "predicting time:", round(time()-t1, 3), "s"
+
+number_of_chris = np.count_nonzero(pred == 1)
+print(number_of_chris)
+
+print(pred[10], pred[26], pred[50])
 
 accuracy = accuracy_score(labels_test, pred)
 print('Accuracy: ', accuracy)
